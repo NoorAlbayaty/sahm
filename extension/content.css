@@ -1,0 +1,11 @@
+#sahm-video-btn {
+  position: fixed; z-index: 2147483647; display: flex; align-items: center; gap: 7px;
+  padding: 7px 13px 7px 10px; border-radius: 20px; cursor: pointer; user-select: none;
+  background: #1a73e8; color: #fff; font: 600 13px/1 "Segoe UI", system-ui, sans-serif;
+  box-shadow: 0 3px 12px rgba(0,0,0,.35); transition: background .15s;
+}
+#sahm-video-btn:hover { background: #1765cc; }
+#sahm-video-btn .sahm-arrow {
+  display: inline-flex; width: 20px; height: 20px; border-radius: 50%; align-items: center;
+  justify-content: center; background: rgba(255,255,255,.22); font-size: 12px;
+}

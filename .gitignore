@@ -1,0 +1,8 @@
+# build output and downloaded tools (too big for git – GitHub builds them)
+build/
+dist/
+vendor_tools/
+*.spec
+__pycache__/
+*.pyc
+*.sahmpart

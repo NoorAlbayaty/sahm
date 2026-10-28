@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  body { font: 13px "Segoe UI", system-ui, sans-serif; width: 300px; margin: 0; padding: 14px; color: #1f2a3a; }
+  h1 { font-size: 15px; margin: 0 0 4px; color: #1a73e8; }
+  h2 { font-size: 12px; margin: 14px 0 6px; color: #5b6b82; text-transform: uppercase; letter-spacing: .04em; }
+  .status { font-size: 12px; margin-bottom: 10px; }
+  .ok { color: #188038; } .bad { color: #d93025; }
+  label { display: block; margin: 9px 0 3px; }
+  input[type=number], input[type=text] { width: 100%; box-sizing: border-box; padding: 5px; border: 1px solid #cfd8e3; border-radius: 5px; }
+  .row { display: flex; align-items: center; gap: 8px; margin: 4px 0; }
+  button.main { width: 100%; padding: 9px; border: 0; border-radius: 7px; background: #1a73e8; color: #fff;
+                font: 600 13px "Segoe UI", system-ui; cursor: pointer; }
+  button.main:hover { background: #1765cc; }
+  #media { max-height: 150px; overflow-y: auto; margin-top: 6px; }
+  .m { display: flex; justify-content: space-between; gap: 6px; padding: 5px 0; border-bottom: 1px solid #eef1f5; font-size: 12px; }
+  .m span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .m a { color: #1a73e8; cursor: pointer; flex-shrink: 0; }
+  small { color: #5b6b82; }
+</style>
+</head>
+<body>
+  <h1>Sahm · سهم</h1>
+  <div id="status" class="status">Checking app…</div>
+  <button class="main" id="grab">⬇ Download video from this page</button>
+  <div id="media"></div>
+  <div id="blocked"></div>
+
+  <h2>Settings</h2>
+  <div class="row"><input type="checkbox" id="enabled"><span>Catch browser downloads</span></div>
+  <div class="row"><input type="checkbox" id="videoButton"><span>Show button over videos</span></div>
+  <label>Ignore files smaller than (KB)</label>
+  <input type="number" id="minSizeKB" min="0">
+  <label>Never catch these types</label>
+  <input type="text" id="skipTypes" placeholder="e.g. pdf, jpg">
+  <p><small>Tip: right-click a link → “Download with Sahm”.</small></p>
+  <script src="popup.js"></script>
+</body>
+</html>

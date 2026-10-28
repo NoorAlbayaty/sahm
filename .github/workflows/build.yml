@@ -1,0 +1,80 @@
+name: Build Windows and macOS
+
+# How to publish:  Releases -> Draft a new release -> new tag like v1.1.0 -> Publish release.
+# (Pushing a tag v1.2.3 from VS Code works too.) The installers are attached to the release
+# automatically ~15 minutes later. Every normal upload to main also builds test copies
+# (Actions tab -> the run -> Artifacts at the bottom).
+on:
+  push:
+    branches: [main, master]
+    tags: ["v*"]
+  release:
+    types: [published, created]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:                       # publishing a release fires two events for the same tag - build once
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Inno Setup
+        run: choco install innosetup -y --no-progress
+      - name: Build app, bundle video tools, build installer
+        run: python build.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Sahm-Windows
+          path: |
+            dist/Sahm-Setup.exe
+            dist/Sahm-Portable.zip
+
+  macos:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-15          # Apple Silicon (M1-M4)
+            label: AppleSilicon
+          - runner: macos-15-intel    # older Intel Macs
+            label: Intel
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build Sahm.app, bundle video tools, make the .dmg
+        run: python build.py
+        # To sign + notarize later: add a Developer ID certificate and set MAC_SIGN_IDENTITY here.
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Sahm-macOS-${{ matrix.label }}
+          path: dist/Sahm-macOS-${{ matrix.label }}.dmg
+
+  publish:
+    # Attach whatever was built to the release for this tag (creates the release if it doesn't exist).
+    needs: [windows, macos]
+    if: ${{ !cancelled() && startsWith(github.ref, 'refs/tags/') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: out
+          pattern: Sahm-*
+          merge-multiple: true
+      - run: ls -la out
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          files: out/*
+          fail_on_unmatched_files: false
